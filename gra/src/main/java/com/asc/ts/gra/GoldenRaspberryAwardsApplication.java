@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class GoldenRaspberryAwardsApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(GoldenRaspberryAwardsApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(GoldenRaspberryAwardsApplication.class, args);
+    }
 }
