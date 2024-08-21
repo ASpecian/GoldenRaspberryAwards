@@ -46,7 +46,7 @@ public class Movie extends AbstractEntity<Movie> {
     private List<String> studios;
     
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "porducer", joinColumns = @JoinColumn(name = "idmovie"))
+    @CollectionTable(name = "producer", joinColumns = @JoinColumn(name = "idmovie"))
     @Column(name = "producer")
     @JsonProperty("producers")
     @CsvBindAndSplitByName(column = "producers", elementType = String.class, splitOn = ",")

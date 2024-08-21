@@ -1,7 +1,9 @@
 package com.asc.ts.gra.api.controller;
 
 import com.asc.ts.gra.model.controller.AbstractMovieController;
+import com.asc.ts.gra.model.entity.AbstractEntity;
 import com.asc.ts.gra.model.entity.Movie;
+import com.asc.ts.gra.model.entity.container.MovieAwardsIntervalContainer;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,5 +55,11 @@ public class MovieController extends AbstractMovieController {
     public ResponseEntity<Movie> update(@PathVariable Long id, @RequestBody Movie obj) {
         obj.setId(id);
         return ResponseEntity.ok().body(service.update(obj)); 
+    }
+
+    @GetMapping(value = "/intervals")
+    @Override
+    public ResponseEntity<MovieAwardsIntervalContainer> getAwardsIntervals() {
+        return ResponseEntity.ok().body(service.getAwardsIntervals());
     }
 }

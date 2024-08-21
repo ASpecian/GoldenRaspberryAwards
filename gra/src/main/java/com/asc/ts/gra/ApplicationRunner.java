@@ -1,7 +1,7 @@
 package com.asc.ts.gra;
 
 import com.asc.ts.gra.model.entity.Movie;
-import com.asc.ts.gra.model.repository.IMovieRepository;
+import com.asc.ts.gra.model.repository.AbstractMovieRepository;
 import com.asc.ts.gra.utils.CsvReader;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 //public class ApplicationRunner {
 public class ApplicationRunner implements  CommandLineRunner {
     @Autowired
-    private IMovieRepository movieRepository;
+    private AbstractMovieRepository movieRepository;
     
     private static String path = "files";
     private static String file = "movies";
