@@ -12,5 +12,5 @@ import org.springframework.http.ResponseEntity;
  */
 
 public abstract class AbstractMovieController extends AbstractController<Movie, AbstractMovieService> {
-    public abstract ResponseEntity<MovieAwardsIntervalContainer> getAwardsIntervals();
+    public abstract ResponseEntity<MovieAwardsIntervalContainer> getAwardsIntervals(String nameProductor, Boolean onlyMinAndMax);
 }

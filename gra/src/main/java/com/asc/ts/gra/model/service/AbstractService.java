@@ -2,6 +2,8 @@ package com.asc.ts.gra.model.service;
 
 import com.asc.ts.gra.model.entity.AbstractEntity;
 import com.asc.ts.gra.model.repository.IRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractService<E extends AbstractEntity, R extends IRepository> {
     @Autowired
     protected R repository;
+    
+    @PersistenceContext
+    protected EntityManager em;
 
     protected void setRepository(R repository) {
         this.repository = repository;

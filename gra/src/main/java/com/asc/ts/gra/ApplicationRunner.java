@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 //public class ApplicationRunner {
-public class ApplicationRunner implements  CommandLineRunner {
+public class ApplicationRunner implements CommandLineRunner {
     @Autowired
     private AbstractMovieRepository movieRepository;
     

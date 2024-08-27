@@ -56,6 +56,11 @@ public class Movie extends AbstractEntity<Movie> {
     @CsvBindByName(column = "winner")
     private Boolean winner = false;
 
+    public Movie(String title, Integer releaseYear) {
+        this.releaseYear = releaseYear;
+        this.title = title;
+    }
+    
     public void setWinner(Boolean winner) {        
         this.winner = (winner == null ? false : winner);
     }

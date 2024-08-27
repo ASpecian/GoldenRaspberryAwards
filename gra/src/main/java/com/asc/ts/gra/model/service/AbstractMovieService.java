@@ -12,26 +12,47 @@ import java.util.List;
  * @data 17.08.2024
  */
 public abstract class AbstractMovieService extends AbstractService<Movie, AbstractMovieRepository> {
-    public MovieAwardsIntervalContainer getAwardsIntervals() {
+    public MovieAwardsIntervalContainer getAwardsIntervals(Boolean onlyMinAndMax, String nameProducer) {
         MovieAwardsIntervalContainer intervals = new MovieAwardsIntervalContainer();
         
-        List<IntervalContainer> minIntervals = repository.findAwardIntervalsMin();
-        List<IntervalContainer> maxIntervals = repository.findAwardIntervalsMax();
-//        
-//        for (Object[] result : results) {
-//            Movie movie1 = (Movie) result[0];
-//            Movie movie2 = (Movie) result[1];
-//            Integer interval = (Integer) result[2];
-//
-//            IntervalContainer intervalContainer = new IntervalContainer();
-//            intervalContainer.setProducer(movie1.getProducers().get(0)); // Assumindo que há pelo menos um produtor
-//            intervalContainer.setInterval(interval);
-//            intervalContainer.setPreviousWin(movie1.getReleaseYear());
-//            intervalContainer.setFollowingWin(movie2.getReleaseYear());
-//
-//            intervals.addMinInterval(intervalContainer);
-//        }
+        Boolean isOnlyMinAndMax = ((nameProducer != null && !nameProducer.isEmpty()) || onlyMinAndMax == null) ? false : onlyMinAndMax;
+        
+        intervals.setMinIntervals(findAwardIntervals(true, isOnlyMinAndMax, nameProducer));
+        intervals.setMaxIntervals(findAwardIntervals(false, isOnlyMinAndMax, nameProducer));
         
         return intervals;
+    }
+    
+    private List<IntervalContainer> findAwardIntervals(boolean isMinInterval, boolean onlyMinAndMax, String nameProducer) {
+        StringBuilder sb = new StringBuilder("WITH WINNER_MOVIES AS (\n")
+                .append("  SELECT P.PRODUCER,\n")
+                .append("         M.RELEASE_YEAR AS PREVIOUSWIN,\n")
+                .append("         LEAD(M.RELEASE_YEAR) OVER (PARTITION BY P.PRODUCER ORDER BY M.RELEASE_YEAR) FOLLOWINGWIN,\n")
+                .append("         LEAD(M.RELEASE_YEAR) OVER (PARTITION BY P.PRODUCER ORDER BY M.RELEASE_YEAR) - M.RELEASE_YEAR AS DIFF,\n")
+                .append("         ROW_NUMBER() OVER (PARTITION BY P.PRODUCER ORDER BY M.RELEASE_YEAR) AS RN\n")
+                .append("  FROM PRODUCER P\n")
+                .append("       INNER JOIN MOVIE M ON (P.IDMOVIE = M.ID)\n")
+                .append("  ORDER BY 1\n")
+                .append("),\n\n")
+                .append("INTERVALS AS (\n")
+                .append(String.format("  SELECT %s(DIFF) AS DIFF%s\n", (isMinInterval ? "MIN" : "MAX"), (onlyMinAndMax ? "" : ",")))
+                .append(String.format("%s", (onlyMinAndMax ? "" : "         PRODUCER")))
+                .append("  FROM  WINNER_MOVIES\n")
+                .append("  WHERE DIFF IS NOT NULL\n")
+                .append("        AND PREVIOUSWIN <> FOLLOWINGWIN\n")
+                .append(String.format("%s", (onlyMinAndMax ? "" : "  GROUP BY PRODUCER")))
+                .append(")\n\n")
+                .append("SELECT M.PRODUCER,\n")
+                .append("       M.DIFF,\n")
+                .append("       M.PREVIOUSWIN,\n")
+                .append("       M.FOLLOWINGWIN\n")
+                .append("FROM INTERVALS I\n")
+                .append(String.format("%s", (nameProducer == null || nameProducer.isBlank() ? "" : (String.format("WHERE M.PRODUCER ILIKE '%%%s%%'\n", nameProducer)))))
+                .append(String.format("     INNER JOIN WINNER_MOVIES M ON (M.DIFF = I.DIFF%s)", (onlyMinAndMax ? "" : " AND M.PRODUCER = I.PRODUCER")));
+
+        System.out.println(String.format("\n\n--------------------------------------------\n> Params: \n> onlyMinAndMax: %s\n> nameProductor: %s\n> Script a executar:\n%s"
+                , onlyMinAndMax, nameProducer == null ? "null" : nameProducer, sb.toString()));
+        
+        return em.createNativeQuery(sb.toString(), IntervalContainer.class).getResultList();
     }
 }

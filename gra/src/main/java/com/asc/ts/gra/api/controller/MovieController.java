@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -57,9 +58,12 @@ public class MovieController extends AbstractMovieController {
         return ResponseEntity.ok().body(service.update(obj)); 
     }
 
-    @GetMapping(value = "/intervals")
+    @GetMapping(value = {"/intervals", "/intervals/{producer}"})
     @Override
-    public ResponseEntity<MovieAwardsIntervalContainer> getAwardsIntervals() {
-        return ResponseEntity.ok().body(service.getAwardsIntervals());
+    public ResponseEntity<MovieAwardsIntervalContainer> getAwardsIntervals(
+            @PathVariable(name = "nameProducer", required = false) String nameProducer
+            , @RequestHeader(name = "onlyMinAndMax", required = false) Boolean onlyMinAndMax
+    ) {
+        return ResponseEntity.ok().body(service.getAwardsIntervals(onlyMinAndMax, nameProducer));
     }
 }
