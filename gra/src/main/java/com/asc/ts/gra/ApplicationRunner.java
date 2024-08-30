@@ -6,6 +6,7 @@ import com.asc.ts.gra.utils.CsvReader;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,8 +15,8 @@ import org.springframework.stereotype.Component;
  * @data 17.08.2024
  */
 
+@Profile("!test")
 @Component
-//public class ApplicationRunner {
 public class ApplicationRunner implements CommandLineRunner {
     @Autowired
     private AbstractMovieRepository movieRepository;

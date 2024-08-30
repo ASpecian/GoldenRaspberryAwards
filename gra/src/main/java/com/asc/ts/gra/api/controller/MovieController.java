@@ -58,7 +58,7 @@ public class MovieController extends AbstractMovieController {
         return ResponseEntity.ok().body(service.update(obj)); 
     }
 
-    @GetMapping(value = {"/intervals", "/intervals/{producer}"})
+    @GetMapping(value = {"/intervals", "/intervals/{nameProducer}"})
     @Override
     public ResponseEntity<MovieAwardsIntervalContainer> getAwardsIntervals(
             @PathVariable(name = "nameProducer", required = false) String nameProducer

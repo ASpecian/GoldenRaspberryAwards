@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 
 @Entity
 @Table(name = "movie")
@@ -54,13 +56,8 @@ public class Movie extends AbstractEntity<Movie> {
     
     @JsonProperty("winner")
     @CsvBindByName(column = "winner")
-    private Boolean winner = false;
+    private Boolean winner;
 
-    public Movie(String title, Integer releaseYear) {
-        this.releaseYear = releaseYear;
-        this.title = title;
-    }
-    
     public void setWinner(Boolean winner) {        
         this.winner = (winner == null ? false : winner);
     }
